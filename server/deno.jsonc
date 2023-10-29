@@ -1,10 +1,11 @@
 {
   "tasks": {
     "dev": "npm --prefix ../client run dev & deno run -A main.ts  ",
-    "build": "npm --prefix ../client run build",
-    // "serve": "deno run --allow-net --allow-read https://deno.land/std@0.157.0/http/file_server.ts dist/",
+
+    // "build": "npm --prefix ../client run build"
+    "deploy": "cd .. && tar -czf joeinfo.tar.gz server && rsync --perms --chmod=u+rwx,g+rwx,o+rwx joeinfo.tar.gz root@128.199.10.62:/root && ssh -t root@128.199.10.62 \"tar -xzf /root/joeinfo.tar.gz -C /root && cd /root && chown -R root:root server && deno task serve\"",
+    "serve": "env PORT=80 pm2 start --interpreter deno  --interpreter-args \"run --allow-net --allow-read --allow-env\" main.ts"
     // "learn": "echo $INIT_CWD && pwd",
-    "v": "vite"
   },
   "fmt": { "semiColons": false, "indentWidth": 4 }
 }
