@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  jchavez_info:
+    image: rex891/jchavez_info
+  hot_cards:
+    image: rex891/hot_cards
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - 80:80
+      - 443:443
+
+ "deploy": "cd .. && tar -czf joeinfo.tar.gz server && rsync --perms --chmod=u+rwx,g+rwx,o+rwx joeinfo.tar.gz root@128.199.10.62:/root && ssh -t root@128.199.10.62 \"tar -xzf /root/joeinfo.tar.gz -C /root && cd /root && chown -R root:root server && deno task serve\"",
+    "serve": "env PORT=80 pm2 start --interpreter deno  --interpreter-args \"run --allow-net --allow-read --allow-env\" main.ts"
