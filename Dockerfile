@@ -13,15 +13,11 @@ FROM node:24 AS base
 # Leverage a cache mount to /root/.yarn to speed up subsequent builds.
 # Leverage bind mounts to package.json and yarn.lock to avoid having to copy them
 # into this layer.
-COPY package.json ./
+COPY . ./
 RUN  npm install
 
 FROM base AS build
 
-COPY tsconfig.json vite.config.ts eslint.config.js qwik.env.d.ts  ./
-COPY adapters ./adapters
-COPY src ./src
-COPY public ./public
 RUN  npm run build
 
 
