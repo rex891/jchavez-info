@@ -1,12 +1,10 @@
 import { component$ } from "@builder.io/qwik";
-import { routeAction$, zod$, z, Form } from "@builder.io/qwik-city";
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
+import { Form, routeAction$, z, zod$ } from "@builder.io/qwik-city";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { schema } from "../../../drizzle/schema";
 export const useCreateUser = routeAction$(
   async (data) => {
-    const sqlite = new Database("./drizzle/db/db.sqlite");
-    const db = drizzle(sqlite, { schema });
+    const db = drizzle(process.env.DATABASE_URL!);
     const user = await db.insert(schema.users).values(data);
     return user;
   },

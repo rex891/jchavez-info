@@ -1,7 +1,7 @@
 
 ################################################################################
 # Use node image for base image for all stages.
-FROM node:24 AS base
+FROM node:24 AS dev
 
 # Set working directory for all build stages.
 # RUN npm install -g deno
@@ -13,10 +13,13 @@ FROM node:24 AS base
 # Leverage a cache mount to /root/.yarn to speed up subsequent builds.
 # Leverage bind mounts to package.json and yarn.lock to avoid having to copy them
 # into this layer.
-COPY . ./
-RUN  npm install
 
-FROM base AS build
+COPY  . ./
+RUN  npm install
+CMD ["npm", "run", "dev"]
+
+
+FROM dev AS build
 
 RUN  npm run build
 
@@ -31,7 +34,7 @@ COPY --chown=node:node package.json ./
 COPY --chown=node:node adapters ./adapters
 COPY --chown=node:node public ./public
 
-COPY --chown=node:node --from=base node_modules ./node_modules
+COPY --chown=node:node --from=dev node_modules ./node_modules
 COPY --chown=node:node --from=build dist ./dist
 COPY --chown=node:node --from=build server ./server
 
@@ -46,4 +49,4 @@ COPY --chown=node:node --from=build server ./server
 EXPOSE 3004
 
 # Run the application.
-CMD ["npm", "run", "serve"]
+CMD ["node", "server/entry.node-server.js"]
