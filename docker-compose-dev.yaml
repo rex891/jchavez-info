@@ -1,3 +1,4 @@
+name: jchavez-info-dev
 services:
   postgresql:
     image: postgres:latest
@@ -12,14 +13,17 @@ services:
 
   jchavez-info:
     build:
-      context: .
+      dockerfile: Dockerfile.dev
+
     ports:
-      - "3004:3004"
+      - "5173:5173"
     depends_on:
       - postgresql
     environment:
       DATABASE_URL: postgres://jchavezuser:jchavezpassword@postgresql:5432/jchavezdb
       PYTHONUNBUFFERED: 1 # Optional: to see logs in real-time
+    volumes:
+      - ./src:/app/src
 
 volumes:
   postgresql_data:

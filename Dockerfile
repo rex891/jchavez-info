@@ -1,11 +1,9 @@
 
 ################################################################################
 # Use node image for base image for all stages.
-FROM node:24 AS dev
+FROM node:24 AS build 
 
 # Set working directory for all build stages.
-# RUN npm install -g deno
-# WORKDIR /home/node
 ################################################################################
 # Create a stage for installing production dependencies.
 
@@ -15,26 +13,19 @@ FROM node:24 AS dev
 # into this layer.
 
 COPY  . ./
-RUN  npm install
-CMD ["npm", "run", "dev"]
-
-
-FROM dev AS build
-
+RUN  --mount=source=./src,dst=/app/src  npm i
 RUN  npm run build
-
 
 FROM node:24-alpine
 
 USER node
 WORKDIR /app
-RUN npm install undici
 
 COPY --chown=node:node package.json ./
 COPY --chown=node:node adapters ./adapters
 COPY --chown=node:node public ./public
 
-COPY --chown=node:node --from=dev node_modules ./node_modules
+COPY --chown=node:node --from=build node_modules ./node_modules
 COPY --chown=node:node --from=build dist ./dist
 COPY --chown=node:node --from=build server ./server
 
