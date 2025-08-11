@@ -3,9 +3,13 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 
 export default component$(() => {
   return (
-    <div class="flex items-center">
+    <div class="flex h-full items-center justify-center">
       <h1>Hi 👋</h1>
-      <div class="bg-slate-200">jchavez info here</div>
+      <div>
+        Can't wait to see what you build with qwik!
+        <br />
+        Happy coding.
+      </div>
     </div>
   );
 });
