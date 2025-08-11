@@ -1,32 +1,25 @@
 
 ################################################################################
 # Use node image for base image for all stages.
-FROM node:23 AS build 
+FROM node:24 AS dev 
 
 WORKDIR /app
-# Set working directory for all build stages.
-################################################################################
-# Create a stage for installing production dependencies.
-
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.yarn to speed up subsequent builds.
-# Leverage bind mounts to package.json and yarn.lock to avoid having to copy them
-# into this layer.
-
 COPY  . ./
 RUN  npm i
+CMD ["npm", "run", "dev"]
+
+FROM dev as build
+
 RUN  npm run build
 
 FROM node:24-alpine
 
 USER node
 WORKDIR /app
+RUN npm i undici
 
-COPY --chown=node:node package.json ./
-COPY --chown=node:node adapters ./adapters
-COPY --chown=node:node public ./public
 
-COPY --chown=node:node --from=build /app/node_modules ./node_modules
+# COPY --chown=node:node --from=build /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/dist ./dist
 COPY --chown=node:node --from=build /app/server ./server
 

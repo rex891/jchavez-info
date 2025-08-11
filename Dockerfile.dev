@@ -1,9 +1,0 @@
-
-################################################################################
-# Use node image for base image for all stages.
-FROM node:24
-WORKDIR /app
-
-COPY  . ./
-RUN  npm i
-CMD ["npm", "run", "dev"]
