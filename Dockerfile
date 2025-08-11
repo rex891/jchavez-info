@@ -1,8 +1,9 @@
 
 ################################################################################
 # Use node image for base image for all stages.
-FROM node:24 AS build 
+FROM node:23 AS build 
 
+WORKDIR /app
 # Set working directory for all build stages.
 ################################################################################
 # Create a stage for installing production dependencies.
@@ -13,7 +14,7 @@ FROM node:24 AS build
 # into this layer.
 
 COPY  . ./
-RUN  --mount=source=./src,dst=/app/src  npm i
+RUN  npm i
 RUN  npm run build
 
 FROM node:24-alpine
@@ -25,9 +26,9 @@ COPY --chown=node:node package.json ./
 COPY --chown=node:node adapters ./adapters
 COPY --chown=node:node public ./public
 
-COPY --chown=node:node --from=build node_modules ./node_modules
-COPY --chown=node:node --from=build dist ./dist
-COPY --chown=node:node --from=build server ./server
+COPY --chown=node:node --from=build /app/node_modules ./node_modules
+COPY --chown=node:node --from=build /app/dist ./dist
+COPY --chown=node:node --from=build /app/server ./server
 
 # Pay attention to set the correct origin and port for the application.
 # This is used by the application to determine the origin of requests.
