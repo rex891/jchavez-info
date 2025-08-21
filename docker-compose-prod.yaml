@@ -18,8 +18,8 @@ services:
     depends_on:
       - postgresql
     environment:
-      DATABASE_URL: postgres://jchavezuser:jchavezpassword@postgresql:5432/jchavezdb
-      PYTHONUNBUFFERED: 1 # Optional: to see logs in real-time
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgresql:5432/${DB_NAME}
+      NODE_ENV: production
 
 volumes:
   postgresql_data:

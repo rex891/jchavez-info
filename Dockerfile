@@ -19,9 +19,9 @@ FROM node:24-alpine
 USER node
 WORKDIR /app
 
-# Install production dependencies
-COPY --chown=node:node package*.json ./
-RUN npm ci --only=production
+# Install dependencies
+COPY --chown=node:node package.json package-lock.json ./
+RUN npm ci --ignore-scripts --production
 
 COPY --chown=node:node --from=build /app/dist ./dist
 COPY --chown=node:node --from=build /app/server ./server
