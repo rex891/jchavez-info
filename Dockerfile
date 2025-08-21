@@ -6,9 +6,11 @@ FROM node:24 AS dev
 WORKDIR /app
 COPY  . ./
 RUN  npm i
+RUN echo HELLO WORLD
+# RUN node initiate_db.mjs
 CMD ["npm", "run", "dev"]
 
-FROM dev as build
+FROM dev AS build
 
 RUN  npm run build
 
@@ -16,10 +18,11 @@ FROM node:24-alpine
 
 USER node
 WORKDIR /app
-RUN npm i undici
 
+# Install production dependencies
+COPY --chown=node:node package*.json ./
+RUN npm ci --only=production
 
-# COPY --chown=node:node --from=build /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/dist ./dist
 COPY --chown=node:node --from=build /app/server ./server
 

@@ -1,29 +1,25 @@
-name: jchavez-info-dev
 services:
   postgresql:
     image: postgres:latest
     environment:
-      POSTGRES_DB: jchavezdb
-      POSTGRES_USER: jchavezuser
-      POSTGRES_PASSWORD: jchavezpassword
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5440:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - postgresql_data:/var/lib/postgresql/data
 
   jchavez-info:
     build:
-      target: dev
-
+      context: .
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT}:3004"
     depends_on:
       - postgresql
     environment:
       DATABASE_URL: postgres://jchavezuser:jchavezpassword@postgresql:5432/jchavezdb
       PYTHONUNBUFFERED: 1 # Optional: to see logs in real-time
-    volumes:
-      - ./src:/app/src
 
 volumes:
   postgresql_data:

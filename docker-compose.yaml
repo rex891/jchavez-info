@@ -1,6 +1,7 @@
+name: jchavez-info-dev
 services:
   postgresql:
-    image: postgres:latest
+    image: postgres:17.6
     environment:
       POSTGRES_DB: jchavezdb
       POSTGRES_USER: jchavezuser
@@ -8,18 +9,18 @@ services:
     ports:
       - "5440:5432"
     volumes:
-      - postgresql_data:/var/lib/postgresql/data
+      - ./db-data:/var/lib/postgresql/data
 
   jchavez-info:
     build:
-      context: .
+      target: dev
+
     ports:
-      - "3004:3004"
+      - "5173:5173"
     depends_on:
       - postgresql
     environment:
       DATABASE_URL: postgres://jchavezuser:jchavezpassword@postgresql:5432/jchavezdb
       PYTHONUNBUFFERED: 1 # Optional: to see logs in real-time
-
-volumes:
-  postgresql_data:
+    volumes:
+      - ./src:/app/src
