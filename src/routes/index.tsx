@@ -3,7 +3,7 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { users } from "../drizzle/schema";
+import { users } from "../../db/schema";
 
 export const useUserCount = routeLoader$(async () => {
   const client = postgres(process.env.DATABASE_URL!);

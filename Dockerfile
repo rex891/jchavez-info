@@ -20,7 +20,8 @@ USER node
 WORKDIR /app
 
 # Install dependencies
-COPY --chown=node:node package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json drizzle.config.ts .env ./
+COPY --chown=node:node db ./db
 RUN npm ci --ignore-scripts --production
 
 COPY --chown=node:node --from=build /app/dist ./dist
