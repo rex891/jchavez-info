@@ -20,7 +20,7 @@ USER node
 WORKDIR /app
 
 # Install dependencies
-COPY --chown=node:node package.json package-lock.json drizzle.config.ts .env ./
+COPY --chown=node:node production_entrypoint.sh package.json package-lock.json drizzle.config.ts .env tsconfig.json ./
 COPY --chown=node:node db ./db
 RUN npm ci --ignore-scripts --production
 
@@ -38,4 +38,4 @@ COPY --chown=node:node --from=build /app/server ./server
 EXPOSE 3004
 
 # Run the application.
-CMD ["node", "server/entry.node-server.js"]
+CMD ["sh", "./production_entrypoint.sh"]
