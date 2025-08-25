@@ -1,9 +1,26 @@
-import { $, component$, useSignal } from '@builder.io/qwik'
+import { $, component$, PropFunction, useSignal } from '@builder.io/qwik'
 import { Link } from '@builder.io/qwik-city'
+
+type Links = {
+  text: string
+  href?: string
+  children?: { text: string; href: string }[]
+}[]
 
 export default component$(() => {
   const checkbox = useSignal<HTMLInputElement>()
-  const closeDrawer = $(() => (checkbox.value!.checked = false))
+  const closeDrawer = $(() => {
+    checkbox.value!.checked = false
+  })
+
+  const links: Links = [
+    { text: 'Home', href: '/' },
+    { text: 'Parent', children: [{ text: 'Home', href: '/' }] },
+    { text: 'About', href: '/about' },
+    { text: 'Daisy', href: '/daisy-ui' },
+    { text: 'Joke', href: '/joke' },
+    { text: 'Examples', href: '/examples' },
+  ]
 
   return (
     <>
@@ -30,75 +47,58 @@ export default component$(() => {
               ></label>
               <ul class="menu bg-base-200 text-base-content min-h-full w-50 p-4">
                 {/* <!-- Sidebar content here --> */}
-                <li>
-                  <Link onClick$={closeDrawer} href="/">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <details>
-                    <summary>Parent</summary>
-                    <ul class="p-2">
-                      <li>
-                        <Link onClick$={closeDrawer}>Submenu 1</Link>
-                      </li>
-                      <li>
-                        <Link onClick$={closeDrawer}>Submenu 2</Link>
-                      </li>
-                    </ul>
-                  </details>
-                </li>
-                <li>
-                  <Link onClick$={closeDrawer} href="/about">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/daisy-ui" onClick$={closeDrawer}>
-                    Daisy
-                  </Link>
-                </li>
+                <LinkView links={links} closeDrawer={closeDrawer} />
               </ul>
             </div>
           </div>
-          <Link class="btn btn-ghost text-xl">Joe Chavez</Link>
+          <Link class="btn btn-ghost text-xl">Joe Chav</Link>
         </div>
+        {/* large screen */}
         <div class="navbar-center hidden lg:flex">
           <ul class="menu menu-horizontal px-1">
-            <li>
-              <Link href="/">Home</Link>
-            </li>
-            <li>
-              <details>
-                <summary>Parent</summary>
-                <ul class="p-2">
-                  <li>
-                    <Link href="/">Home</Link>
-                  </li>
-                  <li>
-                    <Link href="/about">About</Link>
-                  </li>
-                </ul>
-              </details>
-            </li>
-            <li>
-              <Link href="/about">About</Link>
-            </li>
-            <li>
-              <Link href="/daisy-ui">Daisy</Link>
-            </li>
-            <li>
-              <Link href="/joke">Joke</Link>
-            </li>
-            <li>
-              <Link href="/examples">Examples</Link>
-            </li>
+            <LinkView links={links} closeDrawer={closeDrawer} />
           </ul>
         </div>
         <div class="navbar-end">
           <Link class="btn">Button</Link>
         </div>
       </div>
+    </>
+  )
+})
+
+export const LinkView = component$<{
+  links: Links
+  closeDrawer?: PropFunction<() => void>
+}>(({ links, closeDrawer }) => {
+  return (
+    <>
+      {links.map((link) => {
+        return link.children ? (
+          <li>
+            <details>
+              <summary>{link.text}</summary>
+              <ul class="p-2">
+                {link.children.map((child) => {
+                  return (
+                    <li key={child.href}>
+                      <Link onClick$={closeDrawer} href={child.href}>
+                        {child.text}
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            </details>
+          </li>
+        ) : (
+          <li key={link.href}>
+            <Link onClick$={closeDrawer} href={link.href}>
+              {link.text}
+            </Link>
+          </li>
+        )
+      })}
     </>
   )
 })
