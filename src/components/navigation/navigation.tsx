@@ -1,9 +1,9 @@
-import { $, component$, useSignal } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { $, component$, useSignal } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 
 export default component$(() => {
-  const checkbox = useSignal<HTMLInputElement>();
-  const closeDrawer = $(() => (checkbox.value!.checked = false));
+  const checkbox = useSignal<HTMLInputElement>()
+  const closeDrawer = $(() => (checkbox.value!.checked = false))
 
   return (
     <>
@@ -76,7 +76,7 @@ export default component$(() => {
                     <Link href="/">Home</Link>
                   </li>
                   <li>
-                    <Link href="/about">Ahout</Link>
+                    <Link href="/about">About</Link>
                   </li>
                 </ul>
               </details>
@@ -87,6 +87,12 @@ export default component$(() => {
             <li>
               <Link href="/daisy-ui">Daisy</Link>
             </li>
+            <li>
+              <Link href="/joke">Joke</Link>
+            </li>
+            <li>
+              <Link href="/examples">Examples</Link>
+            </li>
           </ul>
         </div>
         <div class="navbar-end">
@@ -94,5 +100,5 @@ export default component$(() => {
         </div>
       </div>
     </>
-  );
-});
+  )
+})

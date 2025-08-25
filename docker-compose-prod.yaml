@@ -6,20 +6,30 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "${DB_PORT}:5432"
+      - '${DB_PORT}:5432'
     volumes:
       - postgresql_data:/var/lib/postgresql/data
 
-  jchavez-info:
-    build:
-      context: .
+  jchavez_info:
+    image: rex891/jchavez-info:0.0.1
     ports:
-      - "${FRONTEND_PORT}:3004"
+      - '${FRONTEND_PORT}:3004'
     depends_on:
       - postgresql
     environment:
       DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgresql:5432/${DB_NAME}
       NODE_ENV: production
+
+  nginx:
+    image: nginx:1.29
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - jchavez_info
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt/
 
 volumes:
   postgresql_data:
